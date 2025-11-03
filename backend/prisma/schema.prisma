@@ -1,0 +1,81 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  firebaseUid  String   @unique @map("firebase_uid")
+  email        String   @unique
+  nome         String
+  role         String   @default("admin")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@map("users")
+}
+
+model Project {
+  id          Int      @id @default(autoincrement())
+  titulo      String
+  descricao   String
+  categoria   String
+  tipo        String
+  plataforma  String
+  imagem      String?
+  tecnologias String[]
+  link        String?
+  tipoLink    String?  @map("tipo_link")
+  destaque    Boolean  @default(false)
+  ativo       Boolean  @default(true)
+  ordem       Int      @default(0)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@index([categoria])
+  @@index([destaque])
+  @@index([ordem])
+  @@map("projects")
+}
+
+model Orcamento {
+  id               Int      @id @default(autoincrement())
+  nome             String
+  email            String
+  telefone         String
+  empresa          String?
+  tipoServico      String   @map("tipo_servico")
+  prazo            String
+  orcamento        String
+  descricaoProjeto String   @map("descricao_projeto")
+  status           String   @default("pendente")
+  notasInternas    String?  @map("notas_internas")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  @@index([status])
+  @@index([createdAt(sort: Desc)])
+  @@map("orcamentos")
+}
+
+model Contato {
+  id         Int      @id @default(autoincrement())
+  nome       String
+  email      String
+  telefone   String?
+  mensagem   String
+  status     String   @default("novo")
+  respondido Boolean  @default(false)
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@index([status])
+  @@index([createdAt(sort: Desc)])
+  @@map("contatos")
+}
